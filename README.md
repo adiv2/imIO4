@@ -1,4 +1,4 @@
-# This version is modified for Image I/O with additional operators
+# This version is modified for Image I/O with additional Image processing operators
 # Sample File Read-Write implementation
 This example shows how to extend the `AbstractFileInputOperator` and `AbstractFileOutputOperator` from [Malhar library](https://github.com/apache/apex-malhar) to create a high performance application to copy files. There are two examples in the project:
 
