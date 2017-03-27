@@ -18,9 +18,10 @@ public class Application implements StreamingApplication
         // create operators
         FileReader reader = dag.addOperator("read",  FileReader.class);
         BytesFileWriter writer = dag.addOperator("write", BytesFileWriter.class);
-        Compress compressor = dag.addOperator("compress", Compress.class);
+        //Compress compressor = dag.addOperator("compress", Compress.class);
         //ToJPEG jpgConverter = dag.addOperator("to jpg ", ToJPEG.class);
-        Resize resizer = dag.addOperator("resize",Resize.class);
+        //Resize resizer = dag.addOperator("resize",Resize.class);
+        OCV  ovc = dag.addOperator("OpenCV",OCV.class);
 
         //Parallel partitioning not tested
 
@@ -40,11 +41,19 @@ public class Application implements StreamingApplication
         dag.addStream("jpgConverter to write", jpgConverter.output,writer.input);
         */
 
+        //Compress + Resize
+        /*
         dag.addStream("ctrl1", reader.control, compressor.controlIn);
         dag.addStream("ctrl2", compressor.controlOut, resizer.controlIn);
         dag.addStream("ctrl3", resizer.controlOut, writer.control);
         dag.addStream("read to compressor", reader.output,compressor.input);
         dag.addStream("compressor to resizer", compressor.output,resizer.input);
         dag.addStream("resizer to write", resizer.output,writer.input);
+        */
+
+        dag.addStream("ctrl1", reader.control, ovc.controlIn);
+        dag.addStream("ctrl2", ovc.controlOut, writer.control);
+        dag.addStream("read to OpenCV", reader.output,ovc.input);
+        dag.addStream("OpenCV to write", ovc.output,writer.input);
     }
 }

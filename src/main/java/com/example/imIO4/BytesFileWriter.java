@@ -64,7 +64,7 @@ public class BytesFileWriter extends com.example.imIO4.AbstractFileOutputOperato
         {
             throw new RuntimeException("Error: fileName empty");
         }
-        try{finalizeFile(fileName);}catch (Exception e){LOG.info("Finalize err "+e.getMessage());}
+        try{finalizeFile(fileName);Thread.sleep(100);}catch (Exception e){LOG.info("Finalize err "+e.getMessage());}
         super.endWindow();
         eof = false;
         fileName = null;

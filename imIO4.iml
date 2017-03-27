@@ -12,6 +12,21 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="lib" level="application" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/opencv-3.2.0/build/bin/opencv-320.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <NATIVE>
+          <root url="file://$USER_HOME$/opencv-3.2.0/build/lib" />
+        </NATIVE>
+        <SOURCES>
+          <root url="jar://$USER_HOME$/opencv-3.2.0/build/bin/opencv-320.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
     <orderEntry type="library" name="Maven: org.apache.apex:malhar-library:3.4.0" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-servlet:8.1.10.v20130312" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-security:8.1.10.v20130312" level="project" />
@@ -137,5 +152,6 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.xbean:xbean-asm5-shaded:4.3" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jctools:jctools-core:1.1" level="project" />
     <orderEntry type="library" name="Maven: net.coobird:thumbnailator:0.4.8" level="project" />
+    <orderEntry type="library" name="Maven: localLibrary:OpenCV:3.2.0" level="project" />
   </component>
 </module>

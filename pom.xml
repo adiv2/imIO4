@@ -274,6 +274,11 @@
       <artifactId>thumbnailator</artifactId>
       <version>[0.4, 0.5)</version>
     </dependency>
+    <dependency>
+      <groupId>localLibrary</groupId>
+      <artifactId>OpenCV</artifactId>
+      <version>3.2.0</version>
+    </dependency>
   </dependencies>
 
 </project>
