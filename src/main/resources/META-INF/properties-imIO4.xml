@@ -14,23 +14,55 @@
   -->
   <property>
     <name>dt.application.imIO4.operator.read.prop.directory</name>
-    <value>file:///home/aditya/Pictures/Wallpapers2/4k2.jpg</value>
-  </property>
-  <property>
-    <name>dt.application.imIO4.operator.write.prop.filePath</name>
-    <value>/home/aditya/IM/Resized/</value>
-  </property>
-  <property>
-    <name>dt.application.imIO4.operator.read.prop.partitionCount</name>
-    <value>1</value>
+    <value>file:///home/aditya/Desktop/t/moon1</value>
   </property>
   <property>
     <name>dt.loggers.level</name>
-    <value>com.datatorrent.*:INFO,org.apache.*:INFO</value>
+    <value>com.datatorrent.*:INFO,org.apache.*:INFO,com.example.*:INFO</value>
   </property>
-  <property>
-  <name>dt.application.FileIO.operator.compressor.port.input.attr.PARTITION_PARALLEL</name>
- <value>true</value>
-  </property>
+    <property>
+        <name>dt.application.imIO4.operator.ASASSN_Halo.prop.soPath</name>
+        <value>file:///home/aditya/Desktop/SO/libopencv_java320.so</value>
+    </property>
+    <property>
+        <name>dt.application.imIO4.operator.ASASSN_Glare.prop.soPath</name>
+        <value>file:///home/aditya/Desktop/SO/libopencv_java320.so</value>
+    </property>
+    <property>
+        <name>dt.application.imIO4.operator.ASASSN_Halo.prop.refPath</name>
+        <value>/home/aditya/Desktop/t/RefsHalo</value>
+    </property>
+    <property>
+        <name>dt.application.imIO4.operator.ASASSN_Glare.prop.refPath</name>
+        <value>/home/aditya/Desktop/t/RefsGlare</value>
+    </property>
+    <property>
+        <name>dt.application.imIO4.operator.writeHalo.prop.filePath</name>
+        <value>file:///home/aditya/Desktop/ApexWrite/halo</value>
+    </property>
+    <property>
+        <name>dt.application.imIO4.operator.writeGlare.prop.filePath</name>
+        <value>file:///home/aditya/Desktop/ApexWrite/glare</value>
+    </property>
+    <property>
+        <name>dt.application.imIO4.operator.writeOther.prop.filePath</name>
+        <value>file:///home/aditya/Desktop/ApexWrite/Others</value>
+    </property>
+    <property>
+        <name>dt.application.imIO4.operator.resize.prop.height</name>
+        <value>0</value>
+    </property>
+    <property>
+        <name>dt.application.imIO4.operator.resize.prop.width</name>
+        <value>0</value>
+    </property>
+    <property>
+        <name>dt.application.imIO4.operator.resize.prop.scale</name>
+        <value>1</value>
+    </property>
+    <property>
+        <name>dt.application.imIO4.operator.Format_Converter.prop.toFileType</name>
+        <value>jpg</value>
+    </property>
 </configuration>
 

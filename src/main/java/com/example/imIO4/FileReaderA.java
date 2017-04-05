@@ -6,15 +6,13 @@ package com.example.imIO4;/*
 import com.datatorrent.api.Context;
 import com.datatorrent.api.DefaultOutputPort;
 import com.datatorrent.lib.io.fs.AbstractFileInputOperator;
+import ij.ImagePlus;
+import ij.io.FileSaver;
 import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.fs.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -76,7 +74,22 @@ public class FileReaderA extends AbstractFileInputOperator<Data>
         filePathStr = filePath.toString();
         LOG.info("readOpen "+START_FILE + filePath.getName());
         InputStream is =  super.openFile(filePath);
-        a = IOUtils.toByteArray(is);
+        if(!filePathStr.contains(".fits"))
+        {
+            a = IOUtils.toByteArray(is);
+        }
+        else
+        {
+            String fitsPath = filePath.getParent().toString()+"/"+filePath.getName();
+            if(fitsPath.contains(":"))
+            {
+                fitsPath=fitsPath.replace("file:","");
+            }
+            LOG.info("ERR "+filePath.getParent()+"/"+filePath.getName());
+            LOG.info("ERR "+fitsPath);
+            ImagePlus imagePlus = new ImagePlus(fitsPath);
+            a = new FileSaver(imagePlus).serialize();
+        }
         return is;
     }
 

@@ -14,30 +14,73 @@ import java.io.InputStream;
 
 public class Resize extends ToolKit
 {
-    private int width=300;
-    private int height=300;
+    protected int width=0;
+    protected int height=0;
+
+    public double getScale()
+    {
+        return scale;
+    }
+
+    public void setScale(double scale)
+    {
+        this.scale = scale;
+    }
+
+    protected double scale=1;
+    public int getWidth()
+    {
+        return width;
+    }
+
+    public void setWidth(int width)
+    {
+        this.width = width;
+    }
+
+    public int getHeight()
+    {
+        return height;
+    }
+
+    public void setHeight(int height)
+    {
+        this.height = height;
+    }
+
+
     private static final Logger LOG = LoggerFactory.getLogger(Resize.class);
 
-    private void resize(byte[] byteImage)
+    private void resize(Data data)
     {
         try
         {
+            byte[] byteImage = data.bytesImage;
             InputStream in = new ByteArrayInputStream(byteImage);
             bufferedImage = ImageIO.read(in);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            BufferedImage resizedImage;
+            LOG.info("fileTypeIs:"+ToolKit.fileType+" scale:"+scale);
             //BufferedImage resizedImage = Thumbnails.of(bufferedImage).size(width, height).asBufferedImage();
-            BufferedImage resizedImage = Thumbnails.of(bufferedImage).scale(0.25).asBufferedImage();
-            ImageIO.write(resizedImage, fileType, baos);
-            byte[] imageInByte = baos.toByteArray();
-            output.emit(imageInByte);
+            if (height==width && width==0)
+            {
+                resizedImage = Thumbnails.of(bufferedImage).scale(scale).asBufferedImage();
+            }
+            else
+            {
+               resizedImage = Thumbnails.of(bufferedImage).size(width, height).asBufferedImage();
+            }
+            ImageIO.write(resizedImage, ToolKit.fileType, baos);
+            data.bytesImage = baos.toByteArray();
+            output.emit(data);
         }
         catch (Exception e){LOG.info(e.getMessage());}
     }
 
     @Override
-    void processTuple(byte[] byteArray)
+    void processTuple(Data data)
     {
-        resize(byteArray);
+        resize(data);
     }
 
 }

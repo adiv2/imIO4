@@ -18,14 +18,16 @@ import java.util.Iterator;
 public class Compress extends  ToolKit
 {
     private static final Logger LOG = LoggerFactory.getLogger(Compress.class);
-    private  void compress(byte[] byteImage)
+    private  void compress(Data data)
     {
+        LOG.info("rec data");
         try
         {
+            byte[] byteImage = data.bytesImage;
             InputStream in = new ByteArrayInputStream(byteImage);
             bufferedImage= ImageIO.read(in);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            Iterator<ImageWriter> writers =  ImageIO.getImageWritersByFormatName(fileType);
+            Iterator<ImageWriter> writers =  ImageIO.getImageWritersByFormatName(ToolKit.fileType);
             ImageWriter writer = writers.next();
             writer.setOutput(new MemoryCacheImageOutputStream(baos));
 
@@ -37,19 +39,19 @@ public class Compress extends  ToolKit
             }
             writer.write(null, new IIOImage(bufferedImage, null, null), param);
             writer.dispose();
-            byte[] imageInByte = baos.toByteArray();
+            data.bytesImage = baos.toByteArray();
             baos.flush();
             baos.reset();
             baos.close();
-            output.emit(imageInByte);
+            output.emit(data);
             LOG.info("send data from compress");
         }
-        catch (Exception e){}
+        catch (Exception e){LOG.info("compressError "+e.getMessage());}
     }
 
     @Override
-    void processTuple(byte[] byteArray)
+    void processTuple(Data data)
     {
-        compress(byteArray);
+        compress(data);
     }
 }

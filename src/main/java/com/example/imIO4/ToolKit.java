@@ -8,58 +8,38 @@ import com.datatorrent.api.DefaultOutputPort;
 import com.datatorrent.common.util.BaseOperator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.imageio.IIOImage;
-import javax.imageio.ImageIO;
-import javax.imageio.ImageWriteParam;
-import javax.imageio.ImageWriter;
-import javax.imageio.stream.MemoryCacheImageOutputStream;
-import javax.tools.Tool;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
+
 
 public class ToolKit extends BaseOperator
 {
     private static final Logger LOG = LoggerFactory.getLogger(ToolKit.class);
-    public String filePathStr;
-    public String fileType;
+    public String filePath;
+    public static String fileType;
     //private transient ArrayList<byte[]> bytesArray = new ArrayList<>();
     public transient BufferedImage bufferedImage = null;
-    public final transient DefaultInputPort<String> controlIn = new DefaultInputPort<String>()
-    {
-        @Override
-        public void process(String tuple)
-        {
-            processControlTuple(tuple);
-        }
-    };
 
-    protected void processControlTuple(final String tuple)
-    {
-        filePathStr = tuple;
-        if (filePathStr.contains("(") && filePathStr.contains(".png")){fileType="png";}
-        if (filePathStr.contains("(") && filePathStr.contains(".jpg")){fileType="jpg";}
-        controlOut.emit(tuple);
-        LOG.info("emit ctr out "+tuple);
-    }
-
-    public final transient DefaultOutputPort<String> controlOut = new DefaultOutputPort<>();
-    public final transient DefaultOutputPort<byte[]> output = new DefaultOutputPort<>();
-    public final transient DefaultInputPort<byte[]> input = new DefaultInputPort<byte[]>()
+    public final transient DefaultOutputPort<Data> output = new DefaultOutputPort<>();
+    public final transient DefaultOutputPort<Data> output1 = new DefaultOutputPort<>();
+    public final transient DefaultInputPort<Data> input = new DefaultInputPort<Data>()
     {
 
         @Override
-        public void process(byte[] tuple)
+        public void process(Data tuple)
         {
+            filePath = tuple.fileName;
+            if ( filePath.contains(".png")){fileType="png";}
+            if (filePath.contains(".jpg")){fileType="jpg";}
+            if (filePath.contains(".jpeg")){fileType="jpg";}
+            if (filePath.contains(".fits")){fileType="fits";}
+            if (filePath.contains(".gif")){fileType="gif";}
+            if (filePath.contains(".tif")){fileType="tif";}
+            LOG.info("file type"+fileType);
             processTuple(tuple);
         }
     };
 
-    void processTuple(byte[] byteimage)
+    void processTuple(Data data)
     {
 
     }
