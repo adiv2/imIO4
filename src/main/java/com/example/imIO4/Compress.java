@@ -21,32 +21,37 @@ public class Compress extends  ToolKit
     private  void compress(Data data)
     {
         LOG.info("rec data");
-        try
+        if(data!=null)
         {
-            byte[] byteImage = data.bytesImage;
-            InputStream in = new ByteArrayInputStream(byteImage);
-            bufferedImage= ImageIO.read(in);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            Iterator<ImageWriter> writers =  ImageIO.getImageWritersByFormatName(ToolKit.fileType);
-            ImageWriter writer = writers.next();
-            writer.setOutput(new MemoryCacheImageOutputStream(baos));
-
-            ImageWriteParam param = writer.getDefaultWriteParam();
-            if(param.canWriteCompressed())
+            try
             {
-                param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-                param.setCompressionQuality(0.05f);
+                byte[] byteImage = data.bytesImage;
+                InputStream in = new ByteArrayInputStream(byteImage);
+                bufferedImage = ImageIO.read(in);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName(ToolKit.fileType);
+                ImageWriter writer = writers.next();
+                writer.setOutput(new MemoryCacheImageOutputStream(baos));
+
+                ImageWriteParam param = writer.getDefaultWriteParam();
+                if (param.canWriteCompressed())
+                {
+                    param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+                    param.setCompressionQuality(0.05f);
+                }
+                writer.write(null, new IIOImage(bufferedImage, null, null), param);
+                writer.dispose();
+                data.bytesImage = baos.toByteArray();
+                baos.flush();
+                baos.reset();
+                baos.close();
+                output.emit(data);
+                LOG.info("send data from compress");
+            } catch (Exception e)
+            {
+                LOG.info("compressError " + e.getMessage());
             }
-            writer.write(null, new IIOImage(bufferedImage, null, null), param);
-            writer.dispose();
-            data.bytesImage = baos.toByteArray();
-            baos.flush();
-            baos.reset();
-            baos.close();
-            output.emit(data);
-            LOG.info("send data from compress");
         }
-        catch (Exception e){LOG.info("compressError "+e.getMessage());}
     }
 
     @Override
