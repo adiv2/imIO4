@@ -7,6 +7,9 @@ import com.datatorrent.lib.io.fs.AbstractFileOutputOperator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+
 public class BytesFileWriterA extends AbstractFileOutputOperator<Data>
 {
     private static final transient Logger LOG = LoggerFactory.getLogger(BytesFileWriterA.class);
@@ -34,7 +37,8 @@ public class BytesFileWriterA extends AbstractFileOutputOperator<Data>
 
         if (!eof) {LOG.info("ERR no eof"+fileName);return;}
         if (null == fileName){LOG.info("ERR file name is null"+fileName);return;}
-        try{finalizeFile(fileName);Thread.sleep(100);}catch (Exception e){LOG.info("Finalize err "+e.getMessage());}
+        try{finalizeFile(fileName);Thread.sleep(100);
+        }catch (Exception e){LOG.info("Finalize err "+e.getMessage());}
         LOG.info("no ERR ");
         super.endWindow();
         eof = false;

@@ -70,7 +70,7 @@ public class ApplicationTest {
   private Configuration getConfig()
   {
     final Configuration result = new Configuration(false);
-    //conf.addResource(this.getClass().getResourceAsStream("/META-INF/properties.xml"));
+    //conf.addResource(this.getClass().getResourceAsStream("/META-INF/properties2.xml"));
     result.set("dt.application.FileIO.operator.read.prop.directory", inputDirName);
     result.setInt("dt.application.FileIO.operator.read.prop.partitionCount", numPartitions);
     result.set("dt.application.FileIO.operator.write.prop.filePath", outputDirName);

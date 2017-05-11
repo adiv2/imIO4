@@ -14,8 +14,28 @@
   -->
   <property>
     <name>dt.application.imIO4.operator.read.prop.directory</name>
-    <value>file:///home/aditya/Desktop/t/moon1</value>
+    <value>file:///Data/WebRoot/Movies/Boruto/episode_1.mkv</value>
   </property>
+    <property>
+        <name>dt.application.imIO4.operator.recognition.prop.matchThreshold</name>
+        <value>0.65</value>
+    </property>
+    <property>
+        <name>dt.application.imIO4.operator.recognition.prop.uniqueThreshold</name>
+        <value>0.65</value>
+    </property>
+    <property>
+        <name>dt.application.imIO4.operator.videoReader.prop.directory</name>
+        <value>file:///Data/WebRoot/Movies/Boruto/episode_1.mkv</value>
+    </property>
+    <property>
+        <name>dt.application.imIO4.operator.videoReader.prop.webCam</name>
+        <value>false</value>
+    </property>
+    <property>
+        <name>dt.application.imIO4.operator.videoReader.prop.seconds</name>
+        <value>10</value>
+    </property>
   <property>
     <name>dt.loggers.level</name>
     <value>com.datatorrent.*:INFO,org.apache.*:INFO,com.example.*:INFO</value>
@@ -63,6 +83,10 @@
     <property>
         <name>dt.application.imIO4.operator.Format_Converter.prop.toFileType</name>
         <value>jpg</value>
+    </property>
+    <property>
+        <name>dt.application.imIO4.operator.compress.prop.compressionRatio</name>
+        <value>0.05f</value>
     </property>
 </configuration>
 

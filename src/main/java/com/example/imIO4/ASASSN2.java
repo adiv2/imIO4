@@ -1,20 +1,17 @@
-package com.example.imIO4;
-/*
- * imIO4
- * Created by Aditya Gholba on 23/3/17.
- * Read image from byte[] using readMat(byte[] byteImage)
- * Write image from Mat using writeMat(Mat destination)
- * Write IP logic in ovcFunc()
- *
+package com.example.imIO4;/*
+ * imIO5.1
+ * Created by Aditya Gholba on 26/4/17.
  */
 
 import com.datatorrent.api.DefaultOutputPort;
-import org.opencv.core.*;
-import org.opencv.core.Point;
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -26,10 +23,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.opencv.imgcodecs.Imgcodecs.imread;
-import static org.opencv.imgproc.Imgproc.rectangle;
 
-
-public class ASASSN extends ToolKit
+public class ASASSN2 extends ToolKit
 {
     public String getSoPath()
     {
@@ -40,18 +35,16 @@ public class ASASSN extends ToolKit
     {
         this.soPath = soPath;
     }
-
     protected static  String soPath ="/home/aditya/opencv-3.2.0/build/lib/libopencv_java320.so";
     protected static final Logger LOG = LoggerFactory.getLogger(ASASSN.class);
     protected  int matches=0;
     protected transient int notMatch=0;
     protected  int dense=0;
     //static {System.load(soPath);}
-    protected  int bufferedImageType;
-    protected  ArrayList<Mat> referenceList = new ArrayList<>();
+    protected ArrayList<Mat> referenceList = new ArrayList<>();
     protected  ArrayList<Mat> templateList = new ArrayList<>();
     protected String refPath;
-    public final transient DefaultOutputPort<Data2> outputScore = new DefaultOutputPort<>();
+    public final transient DefaultOutputPort<Data> outputScore = new DefaultOutputPort<>();
     public String getRefPath()
     {
         return refPath;
@@ -62,61 +55,6 @@ public class ASASSN extends ToolKit
         this.refPath = refPath;
     }
 
-
-    /*protected Mat readMat(byte[] bytesImage)
-    {
-        System.load(soPath);
-        InputStream src = new ByteArrayInputStream(bytesImage);
-        BufferedImage bufferedImage=null;
-        try
-        {
-            bufferedImage = ImageIO.read(src);
-            bufferedImageType = bufferedImage.getType();
-        }
-        catch (Exception e){System.out.print(e.getMessage());}
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        try{ImageIO.write(bufferedImage, "jpg", byteArrayOutputStream);}catch (Exception e){System.out.print(e.getMessage());}
-        byte[] bytes = byteArrayOutputStream.toByteArray();
-        return  Imgcodecs.imdecode(new MatOfByte(bytes), Imgcodecs.CV_LOAD_IMAGE_UNCHANGED);
-
-    }
-
-    private void writeMat(Mat destination,Data data2)
-    {
-        System.load(soPath);
-        BufferedImage bufferedImage1 = new BufferedImage(destination.width(),destination.height(),bufferedImageType);
-        byte[] data = new byte[ ((int) destination.total() * destination.channels()) ];
-        destination.get(0, 0, data);
-        byte b;
-        for(int i=0; i<data.length; i=i+3)
-        {
-            b = data[i];
-            data[i] = data[i+2];
-            data[i+2] = b;
-        }
-        bufferedImage1.getRaster().setDataElements(0,0,destination.cols(),destination.rows(),data);
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        try
-        {
-            ImageIO.write(bufferedImage1, fileType, byteArrayOutputStream);
-        }
-        catch (Exception e){System.out.print(e.getMessage());}
-        data2.bytesImage = byteArrayOutputStream.toByteArray();
-        if(matches>(dense/2))
-        {
-            dense=0;
-            matches=0;
-          //  outputScore.emit(data2);
-        }
-        else
-        {
-            dense=0;
-            matches=0;
-            output.emit(data2);
-        }
-
-
-    }*/
 
     protected  BufferedImage convertToRGB(BufferedImage image)
     {
@@ -147,9 +85,9 @@ public class ASASSN extends ToolKit
         }
         catch (Exception e){System.out.print(e.getMessage());}
         BufferedImage bufferedImage1 = convertToRGB(bufferedImage);
-        for (int y = 0; y < bufferedImage1.getHeight(); y = y + 64)
+        for (int y = 0; y < 2048; y = y + 64)
         {
-            for (int x = 0; x < bufferedImage1.getWidth(); x = x + 64)
+            for (int x = 0; x < 2048; x = x + 64)
             {
                 for (int i = x; i < x + 64; i++)
                 {
@@ -158,7 +96,7 @@ public class ASASSN extends ToolKit
                         Color c = new Color(bufferedImage1.getRGB(i, j));
                         String hex = "#" + Integer.toHexString(c.getRGB()).substring(2);
                         //System.out.println("Pixel at "+i+","+j+" "+hex);
-                        if (hex.equals("#000000") || hex.equals("#191919") || hex.equals("#0c0c0c"))
+                        if(c.getRed()<50)
                         {
                             blackPixels++;
                             blackPixelsInGrid++;
@@ -184,7 +122,7 @@ public class ASASSN extends ToolKit
                         {
                             Color pink = new Color	(255,104,150);
                             int rgb = pink.getRGB();
-                            //bufferedImage1.setRGB(p1,p2,rgb);
+                            bufferedImage1.setRGB(p1,p2,rgb);
                         }
                     }
                     dense++;
@@ -213,8 +151,11 @@ public class ASASSN extends ToolKit
         */
         //System.out.println("Dense blocks:"+dense);
         LOG.info("Dense blocks:"+dense+" temList:"+templateList.size());
-        LOG.info("matchCalled");
+        //LOG.info("matchCalled");
         //firstConcat(data);
+        //ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        //try{ImageIO.write(bufferedImage1,"png",byteArrayOutputStream);}catch(Exception e){}
+        //data.bytesImage=byteArrayOutputStream.toByteArray();
         if(dense<512)
         {
             match(data);
@@ -243,9 +184,26 @@ public class ASASSN extends ToolKit
                 {
                     String refImagePath = file.getAbsolutePath();
                     Mat result = new Mat();
+                    double threshold=0.44;
+                    if(matches>5)
+                    {
+                        threshold=0.43;
+                    }
+                    else if(matches>10)
+                    {
+                        threshold=0.42;
+                    }
+                    else if(matches>15)
+                    {
+                        threshold=0.41;
+                    }
+                    else if(matches>20)
+                    {
+                        threshold=0.40;
+                    }
                     //Mat template = templateList.get(i);
                     //System.out.println(templateList.indexOf(template));
-                    if(matches<=(dense*0.20))
+                    if(matches<=25)
                     {
                         Imgproc.matchTemplate(source, template, result, Imgproc.TM_CCOEFF_NORMED);
                         //Core.normalize(result, result, 0, 1, Core.NORM_MINMAX, -1, new Mat());
@@ -256,14 +214,14 @@ public class ASASSN extends ToolKit
                             mval[i] = mmr.maxVal;
                         }
                         i++;
-                        if (mmr.maxVal >= 0.40)
+                        if (mmr.maxVal >= threshold)
                         {
                             matches++;
                             //System.out.println(mmr.maxVal );
                             //System.out.println(refImagePath);
                             //System.out.println(templateList.indexOf(template));
                         }
-                        if (mmr.maxVal < 0.40)
+                        if (mmr.maxVal < threshold)
                         {
                             notMatch++;
                             if (refImagePath.contains(data.fileName))
@@ -290,13 +248,37 @@ public class ASASSN extends ToolKit
 
         }
         templateList.clear();
-        Data2 data2 = new Data2();
-        data2.bytesImage=data.bytesImage;
-        data2.fileName=data.fileName;
-        data2.matches=matches;
-        data2.dense=dense;
+        Arrays.sort(mval);
+        if (matches >= 20)
+        {
+            // data2ArrayList.remove(partData);
+
+            String mvalsToString="";
+            if (mval.length>10)
+            {
+                for (int l = mval.length - 1; l > mval.length-11; l--)
+                {
+                    mvalsToString = mvalsToString + mval[l]+" ";
+                }
+
+            }
+            else
+            {
+                for (int l = mval.length - 1; l > 0; l--)
+                {
+                    mvalsToString = mvalsToString + mval[l]+" ";
+                }
+            }
+            LOG.info("Matches C "+data.fileName+" matches "+matches+" dense "+dense+" mvals "+mvalsToString);
+            outputScore.emit(data);
+        }
+        else
+        {
+            //data2ArrayList.remove(partData);
+            LOG.info("Matches O "+data.fileName+" matches "+matches+" dense "+dense);
+            output.emit(data);
+        }
         matches=0;
-        outputScore.emit(data2);
 
 
     }
@@ -325,14 +307,4 @@ public class ASASSN extends ToolKit
     }
 
 
-
-}
-class Data2
-{
-    byte[] bytesImage;
-    String fileName;
-    int matches;
-    int parts;
-    int dense;
-    int sent;
 }

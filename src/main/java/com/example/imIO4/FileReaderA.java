@@ -5,7 +5,9 @@ package com.example.imIO4;/*
 
 import com.datatorrent.api.Context;
 import com.datatorrent.api.DefaultOutputPort;
+import com.datatorrent.api.annotation.OutputPortFieldAnnotation;
 import com.datatorrent.lib.io.fs.AbstractFileInputOperator;
+import ij.IJ;
 import ij.ImagePlus;
 import ij.io.FileSaver;
 import org.apache.commons.io.IOUtils;
@@ -23,12 +25,15 @@ public class FileReaderA extends AbstractFileInputOperator<Data>
     private transient BufferedImage br = null;
     byte[] a;
     public  int countImageSent=0;
+    public  int countImageSent2=0;
     private boolean stop;
     private transient int pauseTime;
     private transient Path filePath;
-    public String filePathStr;
-
+    public transient String filePathStr;
+    private long slowDown=10000;
     public final transient DefaultOutputPort<Data> output  = new DefaultOutputPort<>();
+    //public final transient DefaultOutputPort<Data> output1  = new DefaultOutputPort<>();
+    //public final transient DefaultOutputPort<Data> output2  = new DefaultOutputPort<>();
 
     @Override
     public void setup(Context.OperatorContext context)
@@ -126,8 +131,47 @@ public class FileReaderA extends AbstractFileInputOperator<Data>
     @Override
     protected void emit(Data data)
     {
+        Boolean loop=true;
+        long startTime = System.currentTimeMillis();
+        if(countImageSent2%30==0 && countImageSent2!=0)
+        {
+            while(loop==true)
+            {
+                long currentTime = System.currentTimeMillis();
+                if (currentTime - startTime >= 60000)
+                {
+                    loop=false;
+                }
+            }
+        }
+
+        if(countImageSent2%10==0 && countImageSent2!=0)
+        {
+            long temp = slowDown/100;
+            temp = temp*20;
+            slowDown=slowDown+temp;
+
+        }
+        if(countImageSent2%90==0 && countImageSent2!=0)
+        {
+            slowDown=1000;
+
+        }
+        while (loop==true)
+        {
+            long currentTime = System.currentTimeMillis();
+            if (currentTime-startTime >= slowDown)
+            {
+                loop=false;
+            }
+        }
+
+        LOG.info("send data from read "+countImageSent2);
         output.emit(data);
-        LOG.info("send data from read");
+        countImageSent2++;
+        //output1.emit(data);
+        //output2.emit(data);
+
     }
 
 }

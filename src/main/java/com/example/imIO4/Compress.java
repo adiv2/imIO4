@@ -17,6 +17,17 @@ import java.util.Iterator;
 
 public class Compress extends  ToolKit
 {
+    public float getCompressionRatio()
+    {
+        return compressionRatio;
+    }
+
+    public void setCompressionRatio(float compressionRatio)
+    {
+        this.compressionRatio = compressionRatio;
+    }
+
+    private float compressionRatio;
     private static final Logger LOG = LoggerFactory.getLogger(Compress.class);
     private  void compress(Data data)
     {
@@ -37,7 +48,7 @@ public class Compress extends  ToolKit
                 if (param.canWriteCompressed())
                 {
                     param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-                    param.setCompressionQuality(0.05f);
+                    param.setCompressionQuality(compressionRatio);
                 }
                 writer.write(null, new IIOImage(bufferedImage, null, null), param);
                 writer.dispose();
