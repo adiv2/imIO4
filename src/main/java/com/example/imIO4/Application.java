@@ -29,7 +29,7 @@ public class Application implements StreamingApplication
         //FileFormatConverter converter = dag.addOperator("Format_Converter",FileFormatConverter.class);
         //Filters filters = dag.addOperator("filter",Filters.class);
         FrameByFrameVideoReader frameByFrameVideoReader = dag.addOperator("videoReader",FrameByFrameVideoReader.class);
-        FaceRecognition faceRecognition = dag.addOperator("recognition",FaceRecognition.class);
+        Template_Match faceRecognition = dag.addOperator("recognition",Template_Match.class);
         //Parallel partitioning not tested
         //Read write
         //dag.addStream("read to write",reader.output,writeOther.input);

@@ -5,9 +5,7 @@ package com.example.imIO4;/*
 
 import com.datatorrent.api.Context;
 import com.datatorrent.api.DefaultOutputPort;
-import com.datatorrent.api.annotation.OutputPortFieldAnnotation;
 import com.datatorrent.lib.io.fs.AbstractFileInputOperator;
-import ij.IJ;
 import ij.ImagePlus;
 import ij.io.FileSaver;
 import org.apache.commons.io.IOUtils;
@@ -30,7 +28,30 @@ public class FileReaderA extends AbstractFileInputOperator<Data>
     private transient int pauseTime;
     private transient Path filePath;
     public transient String filePathStr;
-    private long slowDown=10000;
+
+    public Boolean getSlowDown()
+    {
+        return slowDown;
+    }
+
+    public void setSlowDown(Boolean slowDown)
+    {
+        this.slowDown = slowDown;
+    }
+
+    private Boolean slowDown=false;
+
+    public long getSlowDownMills()
+    {
+        return slowDownMills;
+    }
+
+    public void setSlowDownMills(long slowDownMills)
+    {
+        this.slowDownMills = slowDownMills;
+    }
+
+    private long slowDownMills =10000;
     public final transient DefaultOutputPort<Data> output  = new DefaultOutputPort<>();
     //public final transient DefaultOutputPort<Data> output1  = new DefaultOutputPort<>();
     //public final transient DefaultOutputPort<Data> output2  = new DefaultOutputPort<>();
@@ -131,41 +152,43 @@ public class FileReaderA extends AbstractFileInputOperator<Data>
     @Override
     protected void emit(Data data)
     {
-        Boolean loop=true;
-        long startTime = System.currentTimeMillis();
-        if(countImageSent2%30==0 && countImageSent2!=0)
+        if(slowDown)
         {
-            while(loop==true)
+            Boolean loop = true;
+            long startTime = System.currentTimeMillis();
+            if (countImageSent2 % 30 == 0 && countImageSent2 != 0)
+            {
+                while (loop == true)
+                {
+                    long currentTime = System.currentTimeMillis();
+                    if (currentTime - startTime >= 60000)
+                    {
+                        loop = false;
+                    }
+                }
+            }
+
+            if (countImageSent2 % 10 == 0 && countImageSent2 != 0)
+            {
+                long temp = slowDownMills / 100;
+                temp = temp * 20;
+                slowDownMills = slowDownMills + temp;
+
+            }
+            if (countImageSent2 % 90 == 0 && countImageSent2 != 0)
+            {
+                slowDownMills = 1000;
+
+            }
+            while (loop == true)
             {
                 long currentTime = System.currentTimeMillis();
-                if (currentTime - startTime >= 60000)
+                if (currentTime - startTime >= slowDownMills)
                 {
-                    loop=false;
+                    loop = false;
                 }
             }
         }
-
-        if(countImageSent2%10==0 && countImageSent2!=0)
-        {
-            long temp = slowDown/100;
-            temp = temp*20;
-            slowDown=slowDown+temp;
-
-        }
-        if(countImageSent2%90==0 && countImageSent2!=0)
-        {
-            slowDown=1000;
-
-        }
-        while (loop==true)
-        {
-            long currentTime = System.currentTimeMillis();
-            if (currentTime-startTime >= slowDown)
-            {
-                loop=false;
-            }
-        }
-
         LOG.info("send data from read "+countImageSent2);
         output.emit(data);
         countImageSent2++;
